@@ -1,5 +1,5 @@
 
-//Видимые элементы сновной страницы
+//Видимые элементы главной страницы
 export const profileTitle = document.querySelector(".profile__title");
 export const profileDescription = document.querySelector(".profile__description");
 export const buttonAddNewCard = document.querySelector(".profile__add-button");
