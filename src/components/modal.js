@@ -1,26 +1,30 @@
 // Функция открытия модального окна
 const openPopup = (popup) => {
-  popup.classList.add('popup_is-opened');
-  document.addEventListener('keydown', (evt) => handleEventClosePopup(popup, evt))
-  popup.addEventListener('click', (evt) => handleEventClosePopup(popup, evt))
-}
+  popup.classList.add("popup_is-opened");
+  document.addEventListener("keydown", handleEventClosePopup);
+  popup.addEventListener("click", handleEventClosePopup);
+};
 
 // Функция закрытия модального окна
 const closePopup = (popup) => {
-  popup.classList.remove('popup_is-opened');
-}
+  popup.classList.remove("popup_is-opened");
+  document.removeEventListener("keydown", handleEventClosePopup);
+  popup.removeEventListener("click", handleEventClosePopup);
+};
 
 // Обработчик клика закрытия модального окна
-const handleEventClosePopup = (popup, evt = undefined) =>{
-  const buttonClosePopup = popup.querySelector('.popup__close');
-  const popupContent = popup.querySelector('.popup__content');
-  if(evt.type === 'click' && (evt.target === buttonClosePopup  || !popupContent.contains(evt.target))){
-    closePopup(popup);
-    popup.removeEventListener('click', (evt) => closePopup(popup));
-  } else if(evt.type === 'keydown' && evt.key === 'Escape'){
-    closePopup(popup);
-    document.removeEventListener('keydown', (evt) => closePopup(popup));
+const handleEventClosePopup = (evt) => {
+  const openedPopup = document.querySelector(".popup_is-opened");
+  const buttonClosePopup = openedPopup.querySelector(".popup__close");
+  const popupContent = openedPopup.querySelector(".popup__content");
+  if (
+    evt.type === "click" &&
+    (evt.target === buttonClosePopup || !popupContent.contains(evt.target))
+  ) {
+    closePopup(openedPopup);
+  } else if (evt.type === "keydown" && evt.key === "Escape") {
+    closePopup(openedPopup);
   }
-}
+};
 
-export {openPopup, closePopup}; 
+export { openPopup, closePopup };

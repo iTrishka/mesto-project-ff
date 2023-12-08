@@ -1,13 +1,18 @@
 import { openPopup } from "./modal";
+import {
+  cardTemplate,
+  popupCard,
+  popupCardImage,
+  popupCardTitle,
+} from "./constants";
 
 // Функция создания карточки
 const createCard = (
   cardData,
-  handleDeleteCard,
+  deleteCard,
   toggleLikeCard,
   handleOpenPopupCard
 ) => {
-  const cardTemplate = document.querySelector("#card-template").content;
   const cardNew = cardTemplate.querySelector(".card").cloneNode(true);
   const buttonBasketDeleteCard = cardNew.querySelector(".card__delete-button");
   const buttonLikeCards = cardNew.querySelector(".card__like-button");
@@ -19,7 +24,7 @@ const createCard = (
   cardImage.alt = cardData.name;
 
   buttonBasketDeleteCard.addEventListener("click", (evt) => {
-    handleDeleteCard(evt);
+    deleteCard(cardNew);
     evt.stopPropagation();
   });
 
@@ -28,20 +33,13 @@ const createCard = (
     evt.stopPropagation();
   });
 
-  cardImage.addEventListener("click", (evt) => handleOpenPopupCard(evt));
+  cardImage.addEventListener("click", () => handleOpenPopupCard(cardData));
 
   return cardNew;
 };
 
-// Функция удаления карточки
-const handleDeleteCard = (evt) => {
-  const cardForDelete = evt.target.closest(".card");
-  cardForDelete.remove();
-  evt.target.removeEventListener("click", (evt) => {
-    handleDeleteCard(evt);
-    evt.stopPropagation();
-  });
-};
+//Функция удаления карточки
+const deleteCard = (card) => card.remove();
 
 //Функция добавления лайка
 const toggleLikeCard = (evt) => {
@@ -49,17 +47,12 @@ const toggleLikeCard = (evt) => {
   buttonLike.classList.toggle("card__like-button_is-active");
 };
 
-// Функция открытия попапа с картинкой
-const handleOpenPopupCard = (evt) => {
-  const popupCard = document.querySelector(".popup_type_image");
-  const popupImage = popupCard.querySelector(".popup__image");
-  const popupTitle = popupCard.querySelector(".popup__caption");
-  const cardImageSrc = evt.target.src;
-  const cardTitle =
-    evt.target.parentElement.querySelector(".card__title").textContent;
-  popupImage.src = cardImageSrc;
-  popupTitle.textContent = cardTitle;
+//Обработчик клика открытия попапа с картинкой
+const handleOpenPopupCard = (cardData) => {
+  popupCardImage.src = cardData.link;
+  popupCardImage.alt = cardData.name;
+  popupCardTitle.textContent = cardData.name;
   openPopup(popupCard);
 };
 
-export { createCard, handleDeleteCard, toggleLikeCard, handleOpenPopupCard };
+export { createCard, deleteCard, toggleLikeCard, handleOpenPopupCard };
