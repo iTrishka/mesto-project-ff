@@ -26,6 +26,10 @@ export const formEditProfile = document.forms["edit-profile"];
 export const popupProfileName = formEditProfile.elements.name;
 export const popupProfileDescription = formEditProfile.elements.description;
 
-
+//Конфиг фунгкции очищения полей валидации и деактивации кнопки
+export const validationConfig = {
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button'
+};
 
 

@@ -21,7 +21,9 @@ import {
   profileDescription,
   popupProfileName,
   popupProfileDescription,
+  validationConfig
 } from "../components/constants";
+import { enableValidation, clearValidation } from "../validation/validation";
 
 // Вывести карточки на страницу
 const addCardsOnPage = (cardsData) => {
@@ -44,6 +46,7 @@ formEditProfile.addEventListener("submit", handleProfileFormSubmit);
 function handlePopupEditProfileOpen() {
   popupProfileName.value = profileTitle.textContent;
   popupProfileDescription.value = profileDescription.textContent;
+  clearValidation(formEditProfile, validationConfig);
   openPopup(popupEditProfile);
 }
 
@@ -52,12 +55,12 @@ function handleProfileFormSubmit(evt) {
   evt.preventDefault();
   profileTitle.textContent = popupProfileName.value;
   profileDescription.textContent = popupProfileDescription.value;
-  formEditProfile.reset();
   closePopup(popupEditProfile);
 }
 
 //Обработчик клика открытия попапа для добавления новой карточки
 function handlePopupAddNewCardOpen() {
+  clearValidation(popupAddNewCard,validationConfig);
   openPopup(popupAddNewCard);
 }
 
@@ -75,3 +78,13 @@ function handleAddCardFormSubmit(evt) {
   formAddNewCard.reset();
   closePopup(popupAddNewCard);
 }
+
+//Валидация форм
+enableValidation({
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}); 
