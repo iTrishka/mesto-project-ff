@@ -1,5 +1,4 @@
 import "../pages/index.css";
-import initialCards from "./cards";
 import {
   createCard,
   deleteCard,
@@ -19,14 +18,17 @@ import {
   formEditProfile,
   profileTitle,
   profileDescription,
+  profileAvatar,
   popupProfileName,
   popupProfileDescription,
   validationConfig
 } from "../components/constants";
 import { enableValidation, clearValidation } from "../validation/validation";
+import { customFetch, getCards, getUserInfo, updateUserInfo, sendNewCard} from './api.js';
 
-// Вывести карточки на страницу
-const addCardsOnPage = (cardsData) => {
+
+//Фнкция отрисовки карточек на странице
+const addCardsOnPage = (cardsData, userId) => {
   cardsData.forEach((cardData) => {
     placesList.append(
       createCard(cardData, deleteCard, toggleLikeCard, handleOpenPopupCard)
@@ -34,7 +36,30 @@ const addCardsOnPage = (cardsData) => {
   });
 };
 
-addCardsOnPage(initialCards);
+//Функция обновления информации пользователя
+const setUserInfo = (userData) => {
+  profileTitle.textContent = userData.name;
+  profileDescription.textContent = userData.about;
+  profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
+}
+
+// Запрос и отрисовка карточек и информации о пользователе
+const getCardsAndUserInfo = () => {
+  Promise.all([
+    getCards(),
+    getUserInfo()
+  ])
+  .then(result => {
+    addCardsOnPage(result[0], result[1]._id);
+    setUserInfo(result[1]);
+  })
+  .catch((err) => {
+      console.log(err); // выводим ошибку в консоль
+  });
+};
+
+getCardsAndUserInfo();
+
 
 //Cлушатели для попапов редактирования профиля и добавления новой карточки
 buttonAddNewCard.addEventListener("click", handlePopupAddNewCardOpen);
@@ -53,9 +78,13 @@ function handlePopupEditProfileOpen() {
 //Обработчик события submit редактирования профиля
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
-  profileTitle.textContent = popupProfileName.value;
-  profileDescription.textContent = popupProfileDescription.value;
-  closePopup(popupEditProfile);
+  updateUserInfo(popupProfileName.value, popupProfileDescription.value)
+  .then(result => getUserInfo())
+  .then(result => {
+    setUserInfo(result);
+    closePopup(popupEditProfile);
+  })
+  .catch((err) => {console.log(err)});
 }
 
 //Обработчик клика открытия попапа для добавления новой карточки
@@ -72,11 +101,17 @@ function handleAddCardFormSubmit(evt) {
     name: formAddNewCardName.value,
     link: formAddNewCardLink.value,
   };
-  placesList.prepend(
-    createCard(cardData, deleteCard, toggleLikeCard, handleOpenPopupCard)
-  );
-  formAddNewCard.reset();
-  closePopup(popupAddNewCard);
+  
+  sendNewCard(cardData)
+  .then(result => {
+    console.log(result)
+    placesList.prepend(
+      createCard(result, deleteCard, toggleLikeCard, handleOpenPopupCard)
+    );
+    formAddNewCard.reset();
+    closePopup(popupAddNewCard);
+  })
+  .catch((err) => {console.log(err)}); 
 }
 
 //Валидация форм

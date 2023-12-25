@@ -2,6 +2,7 @@
 //Видимые элементы главной страницы
 export const profileTitle = document.querySelector(".profile__title");
 export const profileDescription = document.querySelector(".profile__description");
+export const profileAvatar = document.querySelector(".profile__image");
 export const buttonAddNewCard = document.querySelector(".profile__add-button");
 export const buttonEditProfile = document.querySelector(".profile__edit-button");
 export const placesList = document.querySelector(".places__list");

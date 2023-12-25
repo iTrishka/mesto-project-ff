@@ -1,6 +1,5 @@
 //функция показать ошибку валидации
 const showInputError = (formElement, inputElement, errorMessage) => {
-  console.log(errorMessage)
   const errorElement = formElement.querySelector(`.${inputElement.name}-error`);
   inputElement.classList.add('popup__input_type_error');
   errorElement.textContent = errorMessage;

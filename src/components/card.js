@@ -11,11 +11,12 @@ const createCard = (
   cardData,
   deleteCard,
   toggleLikeCard,
-  handleOpenPopupCard
+  handleOpenPopupCard,
+  userId
 ) => {
   const cardNew = cardTemplate.querySelector(".card").cloneNode(true);
   const buttonBasketDeleteCard = cardNew.querySelector(".card__delete-button");
-  const buttonLikeCards = cardNew.querySelector(".card__like-button");
+  const buttonLikeCard = cardNew.querySelector(".card__like-button");
   const cardImage = cardNew.querySelector(".card__image");
   const cardTitle = cardNew.querySelector(".card__title");
 
@@ -28,10 +29,14 @@ const createCard = (
     evt.stopPropagation();
   });
 
-  buttonLikeCards.addEventListener("click", (evt) => {
-    toggleLikeCard(evt);
-    evt.stopPropagation();
-  });
+  if(cardData.owner._id === userId){
+    hideLikeBtn(buttonLikeCard);
+  }else {
+    buttonLikeCard.addEventListener("click", (evt) => {
+      toggleLikeCard(evt);
+      evt.stopPropagation();
+    });
+  }
 
   cardImage.addEventListener("click", () => handleOpenPopupCard(cardData));
 
@@ -54,5 +59,10 @@ const handleOpenPopupCard = (cardData) => {
   popupCardTitle.textContent = cardData.name;
   openPopup(popupCard);
 };
+
+//Функция скрытия лайка
+const hideLikeBtn = (buttonLikeCard) => {
+  buttonLikeCard.classList.add(buttonLikeCard);
+}
 
 export { createCard, deleteCard, toggleLikeCard, handleOpenPopupCard };
