@@ -16,8 +16,9 @@ export const checkResponse = (res) => {
 
 //Функция запроса
 export const customFetch = (endpoint, method = 'GET', body = {}) => {
-  if(method === "GET"){
+  if(method === "GET" || method==="DELETE" || method==="PUT"){
     return fetch(`${config.baseUrl}/${endpoint}`, {
+      method: method,
       headers: config.headers
     })
     .then(result => checkResponse(result))
@@ -55,3 +56,18 @@ export const sendNewCard = (card) =>  customFetch('cards', 'POST', {
   name: card.name,
   link: card.link
 });
+
+//Запрос на обновление аватарки(PATCH)
+export const updateUserAvatar = (url) => customFetch('users/me/avatar', 'PATCH', {
+  avatar: url
+});
+
+//Запрос на удаление карточки (DELETE)
+export const deleteCard = (id) =>  customFetch(`cards/${id}`, 'DELETE');
+
+//Запрос на добавление лайка карточки(PUT)
+export const addLikeCard = (id) =>  customFetch(`cards/likes/${id}`, 'PUT');
+
+//Запрос на удаление лайка карточки (DELETE)
+export const removeLikeCard = (id) =>  customFetch(`cards/likes/${id}`, 'DELETE');
+

@@ -1,7 +1,6 @@
 import "../pages/index.css";
 import {
   createCard,
-  deleteCard,
   toggleLikeCard,
   handleOpenPopupCard,
 } from "../components/card";
@@ -12,6 +11,7 @@ import {
   popupEditProfile,
   buttonAddNewCard,
   buttonEditProfile,
+  buttonSubmitPopup,
   formAddNewCard,
   formAddNewCardName,
   formAddNewCardLink,
@@ -21,17 +21,22 @@ import {
   profileAvatar,
   popupProfileName,
   popupProfileDescription,
-  validationConfig
+  popupEditAvatar,
+  formEditAvatar,
+  formEditAvatarLink,
+  validationConfig,
+  buttonTextSubmit
 } from "../components/constants";
 import { enableValidation, clearValidation } from "../validation/validation";
-import { customFetch, getCards, getUserInfo, updateUserInfo, sendNewCard} from './api.js';
+import { customFetch, getCards, getUserInfo, updateUserInfo, updateUserAvatar, sendNewCard, deleteCard} from './api.js';
 
+let userId = '';
 
 //Фнкция отрисовки карточек на странице
 const addCardsOnPage = (cardsData, userId) => {
   cardsData.forEach((cardData) => {
     placesList.append(
-      createCard(cardData, deleteCard, toggleLikeCard, handleOpenPopupCard)
+      createCard(cardData, deleteCard, toggleLikeCard, handleOpenPopupCard, userId)
     );
   });
 };
@@ -50,6 +55,7 @@ const getCardsAndUserInfo = () => {
     getUserInfo()
   ])
   .then(result => {
+    userId = result[1]._id;
     addCardsOnPage(result[0], result[1]._id);
     setUserInfo(result[1]);
   })
@@ -66,6 +72,8 @@ buttonAddNewCard.addEventListener("click", handlePopupAddNewCardOpen);
 formAddNewCard.addEventListener("submit", handleAddCardFormSubmit);
 buttonEditProfile.addEventListener("click", handlePopupEditProfileOpen);
 formEditProfile.addEventListener("submit", handleProfileFormSubmit);
+profileAvatar.addEventListener("click", handlePopupEditAvatarOpen);
+formEditAvatar.addEventListener("submit", handleEditAvatarFormSubmit); 
 
 //Обработчик клика открытия попапа для редактирования профиля
 function handlePopupEditProfileOpen() {
@@ -75,17 +83,48 @@ function handlePopupEditProfileOpen() {
   openPopup(popupEditProfile);
 }
 
+
 //Обработчик события submit редактирования профиля
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
+  changeButtonSubmit(formEditProfile, buttonTextSubmit.loading);
   updateUserInfo(popupProfileName.value, popupProfileDescription.value)
   .then(result => getUserInfo())
   .then(result => {
     setUserInfo(result);
     closePopup(popupEditProfile);
+    changeButtonSubmit(formEditProfile, buttonTextSubmit.default);
   })
-  .catch((err) => {console.log(err)});
+  .catch((err) => {
+    console.log(err)
+    changeButtonSubmit(formAddNewCardName, buttonTextSubmit.error);
+  });
 }
+
+//Обработчик клика открытия попапа для редактирования аватарки
+function handlePopupEditAvatarOpen() {
+  clearValidation(popupEditAvatar,validationConfig);
+  openPopup(popupEditAvatar);
+}
+
+//Обработчик события submit редактирования аватарки
+function handleEditAvatarFormSubmit(evt) {
+  evt.preventDefault();
+  changeButtonSubmit(formEditAvatar, buttonTextSubmit.loading);
+  updateUserAvatar(formEditAvatarLink.value)
+  .then(result => {
+    setUserInfo(result);
+    formEditAvatar.reset();
+    closePopup(popupEditAvatar);
+    changeButtonSubmit(formEditProfile, buttonTextSubmit.default);
+  })
+  .catch((err) => {
+    changeButtonSubmit(formAddNewCardName, buttonTextSubmit.error);
+    сonsole.log(err)
+  }); 
+
+}
+
 
 //Обработчик клика открытия попапа для добавления новой карточки
 function handlePopupAddNewCardOpen() {
@@ -100,18 +139,26 @@ function handleAddCardFormSubmit(evt) {
   const cardData = {
     name: formAddNewCardName.value,
     link: formAddNewCardLink.value,
+    owner: {
+      _id: userId
+    }
+      
   };
-  
+  changeButtonSubmit(formAddNewCard, buttonTextSubmit.loading);
   sendNewCard(cardData)
   .then(result => {
     console.log(result)
     placesList.prepend(
-      createCard(result, deleteCard, toggleLikeCard, handleOpenPopupCard)
+      createCard(result, deleteCard, toggleLikeCard, handleOpenPopupCard, userId)
     );
     formAddNewCard.reset();
     closePopup(popupAddNewCard);
+    changeButtonSubmit(formEditProfile, buttonTextSubmit.default);
   })
-  .catch((err) => {console.log(err)}); 
+  .catch((err) => {
+    changeButtonSubmit(formAddNewCardName, buttonTextSubmit.error);
+    console.log(err);
+  });
 }
 
 //Валидация форм
@@ -123,3 +170,10 @@ enableValidation({
   inputErrorClass: 'popup__input_type_error',
   errorClass: 'popup__error_visible'
 }); 
+
+//Функция ожидания результата запроса
+function changeButtonSubmit(form, text){
+  const buttonSubmit = form.querySelector(".popup__button");
+  console.log(buttonSubmit)
+  buttonSubmit.textContent = text;
+}
