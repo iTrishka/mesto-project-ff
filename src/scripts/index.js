@@ -107,7 +107,7 @@ function handleProfileFormSubmit(evt) {
     })
     .catch((err) => {
       console.log(err);
-      changeButtonSubmit(formAddNewCardName, buttonTextSubmit.error);
+      changeButtonSubmit(formEditProfile, buttonTextSubmit.error);
     });
 };
 
@@ -126,11 +126,11 @@ function handleEditAvatarFormSubmit(evt) {
       setUserInfo(result);
       formEditAvatar.reset();
       closePopup(popupEditAvatar);
-      changeButtonSubmit(formEditProfile, buttonTextSubmit.default);
+      changeButtonSubmit(formEditAvatar, buttonTextSubmit.default);
     })
     .catch((err) => {
-      changeButtonSubmit(formAddNewCardName, buttonTextSubmit.error);
-      сonsole.log(err);
+      changeButtonSubmit(formEditAvatar, buttonTextSubmit.error);
+      console.log(err);
     });
 }
 
@@ -165,10 +165,10 @@ function handleAddCardFormSubmit(evt) {
       );
       formAddNewCard.reset();
       closePopup(popupAddNewCard);
-      changeButtonSubmit(formEditProfile, buttonTextSubmit.default);
+      changeButtonSubmit(formAddNewCard, buttonTextSubmit.default);
     })
     .catch((err) => {
-      changeButtonSubmit(formAddNewCardName, buttonTextSubmit.error);
+      changeButtonSubmit(formAddNewCard, buttonTextSubmit.error);
       console.log(err);
     });
 };
