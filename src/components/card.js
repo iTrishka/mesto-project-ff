@@ -42,7 +42,7 @@ const createCard = (
         cardNew.remove();
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err);formatting
       });
   });
 
