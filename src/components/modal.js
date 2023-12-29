@@ -23,10 +23,8 @@ const handleEventClosePopup = (evt) => {
     (evt.target === buttonClosePopup || !popupContent.contains(evt.target))
   ) {
     closePopup(openedPopup);
-    console.log("1")
   } else if (evt.type === "keydown" && evt.key === "Escape") {
     closePopup(openedPopup);
-    console.log("2")
   }
 };
 
