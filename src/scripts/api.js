@@ -35,11 +35,7 @@ export const customFetch = (endpoint, method = "GET", body = {}) => {
       method: method,
       headers: config.headers,
       body: JSON.stringify(body),
-    })
-      .then((result) => checkResponse(result))
-      .catch((err) => {
-        console.log(err);
-      });
+    }).then((result) => checkResponse(result));
   }
 };
 

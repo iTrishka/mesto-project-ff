@@ -99,7 +99,6 @@ function handleProfileFormSubmit(evt) {
   evt.preventDefault();
   changeButtonSubmit(formEditProfile, buttonTextSubmit.loading);
   updateUserInfo(popupProfileName.value, popupProfileDescription.value)
-    .then((result) => getUserInfo())
     .then((result) => {
       setUserInfo(result);
       closePopup(popupEditProfile);
@@ -109,13 +108,13 @@ function handleProfileFormSubmit(evt) {
       console.log(err);
       changeButtonSubmit(formEditProfile, buttonTextSubmit.error);
     });
-};
+}
 
 //Обработчик клика открытия попапа для редактирования аватарки
 function handlePopupEditAvatarOpen() {
   clearValidation(popupEditAvatar, validationConfig);
   openPopup(popupEditAvatar);
-};
+}
 
 //Обработчик события submit редактирования аватарки
 function handleEditAvatarFormSubmit(evt) {
@@ -138,7 +137,7 @@ function handleEditAvatarFormSubmit(evt) {
 function handlePopupAddNewCardOpen() {
   clearValidation(popupAddNewCard, validationConfig);
   openPopup(popupAddNewCard);
-};
+}
 
 //Обработчик события submit добавления новой карточки
 function handleAddCardFormSubmit(evt) {
@@ -171,20 +170,13 @@ function handleAddCardFormSubmit(evt) {
       changeButtonSubmit(formAddNewCard, buttonTextSubmit.error);
       console.log(err);
     });
-};
+}
 
 //Валидация форм
-enableValidation({
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__button",
-  inactiveButtonClass: "popup__button_disabled",
-  inputErrorClass: "popup__input_type_error",
-  errorClass: "popup__error_visible",
-});
+enableValidation(validationConfig);
 
 //Функция ожидания результата запроса
 function changeButtonSubmit(form, text) {
   const buttonSubmit = form.querySelector(".popup__button");
   buttonSubmit.textContent = text;
-};
+}

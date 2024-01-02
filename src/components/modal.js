@@ -15,15 +15,13 @@ const closePopup = (popup) => {
 // Обработчик клика закрытия модального окна
 const handleEventClosePopup = (evt) => {
   const openedPopup = document.querySelector(".popup_is-opened");
-  const popupForm = openedPopup.querySelector(".popup__form");
   const buttonClosePopup = openedPopup.querySelector(".popup__close");
   const popupContent = openedPopup.querySelector(".popup__content");
   if (
-    evt.type === "click" &&
-    (evt.target === buttonClosePopup || !popupContent.contains(evt.target))
+    (evt.type === "keydown" && evt.key === "Escape") ||
+    (evt.type === "click" &&
+      (evt.target === buttonClosePopup || !popupContent.contains(evt.target)))
   ) {
-    closePopup(openedPopup);
-  } else if (evt.type === "keydown" && evt.key === "Escape") {
     closePopup(openedPopup);
   }
 };
